@@ -1,0 +1,19 @@
+
+.button {
+-fx-background-color: #245da8; /* Default background color */
+    -fx-font-family: "Chiller";
+    -fx-text-fill: white;         /* Text color */
+    -fx-font-size: 43px;          /* Font size */
+    -fx-padding: 10px 20px;       /* Padding inside the button */
+    -fx-border-color: #123456;   /* Border color */
+    -fx-border-width: 2px;        /* Border width */
+    -fx-border-radius: 10px;      /* Rounded borders */
+    -fx-background-radius: 10px; /* Rounded background */
+    -fx-cursor: hand;
+}
+.button:hover{
+    -fx-background-color: #123456; /* Darker background when selected */
+    -fx-text-fill: #ffcc00;        /* Text color when selected */
+    -fx-border-color: #ffcc00;
+    -fx-underline :true;
+}
