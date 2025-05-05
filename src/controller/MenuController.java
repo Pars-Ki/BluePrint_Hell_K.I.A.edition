@@ -1,5 +1,6 @@
 package controller;
 
+import Game.Level1;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -12,7 +13,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
-import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -42,5 +42,9 @@ public class MenuController implements Initializable {
 
     public void Setting(Event event){
         SceneController.switchScene("../resources/Settings.fxml");
+    }
+
+    public void Start(Event event){
+        Level1.start();
     }
 }

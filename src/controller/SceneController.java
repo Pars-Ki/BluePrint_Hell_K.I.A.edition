@@ -5,6 +5,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -28,8 +30,8 @@ public class SceneController {
         scene.getStylesheets().add("resources/Button.css");
         stage.setScene(scene);
         stage.setTitle("SuperHexagon K.I.A.edition");
-//            Image icon = new Image("icon.png");
-//            stage.getIcons().add(icon);
+        Image icon = new Image("resources/icon.png");
+        stage.getIcons().add(icon);
         stage.setFullScreen(true);
         stage.setResizable(false);
         stage.show();
@@ -45,6 +47,13 @@ public class SceneController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static void switchscenePrim(Pane pane){
+        scene = new Scene(pane);
+        scene.getStylesheets().add("resources/Button.css");
+        stage.setScene(scene);
+        stage.show();
     }
     public static void Exit(){
         stage.close();
