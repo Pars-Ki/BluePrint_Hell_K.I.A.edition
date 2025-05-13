@@ -16,7 +16,9 @@ import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 
 public class Level1 {
-    private static Systems s1 = new Systems();
+    public static Systems s1 = new Systems();
+    public static Systems s2 = new Systems();
+    public static Systems s3 = new Systems();
 public static void start(){
     Level1 lvl = new Level1();
     Pane pane = new Pane();
@@ -44,6 +46,29 @@ public static void start(){
     s1.addPorts(new Port(PortStatus.Output, PortShape.Square));
     s1.setInputPorts(pane);
     s1.setOutputPorts(pane);
+
+    pane.getChildren().addAll(s2.SystemBody, s2.Indicator);
+    s2.setBodyCoordinate(500, 600);
+    s2.addPorts(new Port(PortStatus.Input, PortShape.Square));
+    s2.addPorts(new Port(PortStatus.Input, PortShape.Triangle));
+    s2.addPorts(new Port(PortStatus.Input, PortShape.Square));
+    s2.addPorts(new Port(PortStatus.Output, PortShape.Triangle));
+    s2.addPorts(new Port(PortStatus.Output, PortShape.Square));
+    s2.addPorts(new Port(PortStatus.Output, PortShape.Triangle));
+    s2.setInputPorts(pane);
+    s2.setOutputPorts(pane);
+
+
+    pane.getChildren().addAll(s3.SystemBody, s3.Indicator);
+    s3.setBodyCoordinate(900, 300);
+    s3.addPorts(new Port(PortStatus.Input, PortShape.Square));
+    s3.addPorts(new Port(PortStatus.Input, PortShape.Triangle));
+    s3.addPorts(new Port(PortStatus.Output, PortShape.Triangle));
+    s3.addPorts(new Port(PortStatus.Output, PortShape.Square));
+    s3.setInputPorts(pane);
+    s3.setOutputPorts(pane);
+
+    WireController wireController = new WireController(pane);
     SceneController.switchscenePrim(pane);
 }
 }

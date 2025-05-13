@@ -52,6 +52,8 @@ public class SceneController {
     public static void switchscenePrim(Pane pane){
         scene = new Scene(pane);
         scene.getStylesheets().add("resources/Button.css");
+        MediaController.ResetMedia();
+        MediaController.ChangeToGameSoundtrack();
         stage.setScene(scene);
         stage.show();
     }

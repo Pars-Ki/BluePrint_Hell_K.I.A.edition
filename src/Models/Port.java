@@ -1,5 +1,6 @@
 package Models;
 
+import Game.WireController;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
@@ -8,24 +9,26 @@ import javafx.scene.shape.Shape;
 public class Port {
     public PortShape portShape;
     public PortStatus portStatus;
+    public Usage usage = Usage.NotUsed;
     public Shape shape;
     public double centerX;
     public double centerY;
+    public Systems system;
+    public Wire wire;
 
-    public Port(PortStatus portStatus1, PortShape portShape1){
+    public Port(PortStatus portStatus1, PortShape portShape1) {
         portShape = portShape1;
         portStatus = portStatus1;
 
-        if (portShape == PortShape.Square){
-            shape = new Rectangle(20,20);
+        if (portShape == PortShape.Square) {
+            shape = new Rectangle(20, 20);
             shape.setStroke(Color.web("#aa57ff"));
             shape.setStrokeWidth(4);
             shape.setTranslateX(-10);
             shape.setTranslateY(-10);
             centerX = 0;
             centerY = 0;
-        }
-        else if (portShape == PortShape.Triangle) {
+        } else if (portShape == PortShape.Triangle) {
             double height = 20;
             double sideLength = (height * 2) / Math.sqrt(3);
 
@@ -46,9 +49,13 @@ public class Port {
             centerY = 0;
         }
         shape.setFill(Color.color(0.02, 0.16, 0.21, 0.6));
-        //shape.setOnMouseEntered(mouseEvent -> shape.setOpacity(0.5));
-        //shape.setOnMouseExited(mouseEvent -> shape.setOpacity(1));
-        //shape.setOnMouseReleased(mouseEvent -> shape.setFill(Color.RED));
+        if (usage == Usage.NotUsed) {
+            shape.setOnMouseEntered(mouseEvent -> shape.setOpacity(0.5));
+            shape.setOnMouseExited(mouseEvent -> shape.setOpacity(1));
+        }
+        shape.setOnMouseClicked(mouseEvent -> {
+            WireController.UpdateSelection(this);
+        });
     }
 
     public void setCoordinate(double x, double y){

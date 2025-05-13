@@ -20,6 +20,19 @@ public class MediaController {
         }
     }
 
+    public static void ResetMedia(){
+        mediaPlayer.stop();
+    }
+
+    public static void ChangeToGameSoundtrack(){
+        File file = new File("src/resources/GameSoundtrack.mp3");
+        Media media = new Media(file.toURI().toString());
+        mediaPlayer = new MediaPlayer(media);
+        mediaPlayer.setVolume(volume);
+        mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+        mediaPlayer.setAutoPlay(true);
+    }
+
     public static void  setVolume(){
         mediaPlayer.setVolume(volume);
     }
