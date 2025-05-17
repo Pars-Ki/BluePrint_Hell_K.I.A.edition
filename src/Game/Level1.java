@@ -1,10 +1,8 @@
 package Game;
 
-import Models.Port;
-import Models.PortShape;
-import Models.PortStatus;
-import Models.Systems;
+import Models.*;
 import controller.SceneController;
+import controller.SystemController;
 import javafx.geometry.Insets;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -16,12 +14,30 @@ import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 
 public class Level1 {
-    public static Systems s1 = new Systems();
-    public static Systems s2 = new Systems();
-    public static Systems s3 = new Systems();
+    public static PacketController packetController = new PacketController();
+
 public static void start(){
+    packetController.setDaemon(true);
+    packetController.start();
+    Systems s1 = new Systems();
+    Systems s2 = new Systems();
+    Systems s3 = new Systems();
+    Packet p1 = new Packet(PacketShape.square ,s1);
+    Packet p2 = new Packet(PacketShape.Traingle, s1);
+    Packet p3 = new Packet(PacketShape.Traingle, s1);
+    Packet p4 = new Packet(PacketShape.square, s1);
+    s1.packets.add(p1);
+    s1.packets.add(p2);
+    s1.packets.add(p3);
+    s1.packets.add(p4);
+
+    SystemController.systems.add(s1);
+    SystemController.systems.add(s2);
+    SystemController.systems.add(s3);
+    new SystemController();
     Level1 lvl = new Level1();
     Pane pane = new Pane();
+    HUD hud = new HUD(pane);
 
     Stop[] stops = new Stop[] {
             new Stop(0, javafx.scene.paint.Color.web("#5ae8c2")),  // Starting color
@@ -68,6 +84,10 @@ public static void start(){
     s3.setInputPorts(pane);
     s3.setOutputPorts(pane);
 
+    pane.getChildren().add(p1.shape);
+    pane.getChildren().add(p2.shape);
+    pane.getChildren().add(p3.shape);
+    pane.getChildren().add(p4.shape);
     WireController wireController = new WireController(pane);
     SceneController.switchscenePrim(pane);
 }

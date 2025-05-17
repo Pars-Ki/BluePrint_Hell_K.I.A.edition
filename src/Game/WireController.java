@@ -1,6 +1,7 @@
 package Game;
 
 import Models.*;
+import controller.SystemController;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.layout.Pane;
@@ -12,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class WireController {
-    public static double TotalWire = 500;
+    public static double TotalWire = 10000;
     public static boolean InputSelect = false;
     public static boolean OutputSelect = false;
     public static Port InputPort;
@@ -24,7 +25,7 @@ public class WireController {
     public static BooleanProperty OutputSelected = new SimpleBooleanProperty(false);
     public static BooleanProperty WireDelete = new SimpleBooleanProperty(false);
 
-    WireController(Pane pane){
+    WireController(Pane pane) {
         BothSelected.addListener((observable, oldValue, newValue) -> {
             if (newValue) {
                 Wire wire = new Wire();
@@ -41,12 +42,14 @@ public class WireController {
                 wire.OutputPort.shape.setFill(Color.color(0.02, 0.16, 0.21, 0.6));
                 wire.InputPort.usage = Usage.Used;
                 wire.OutputPort.usage = Usage.Used;
-                if (InputPort.system.inWires.size() == InputPort.system.inputPorts.size() & InputPort.system.outWires.size() == InputPort.system.outputPorts.size()){
+                if (InputPort.system.inWires.size() == InputPort.system.inputPorts.size() & InputPort.system.outWires.size() == InputPort.system.outputPorts.size()) {
                     InputPort.system.indicatorStatusProperty.set(IndicatorStatus.ON);
                 }
-                if (OutputPort.system.inWires.size() == OutputPort.system.inputPorts.size() & OutputPort.system.outWires.size() == OutputPort.system.outputPorts.size()){
+                if (OutputPort.system.inWires.size() == OutputPort.system.inputPorts.size() & OutputPort.system.outWires.size() == OutputPort.system.outputPorts.size()) {
                     OutputPort.system.indicatorStatusProperty.set(IndicatorStatus.ON);
                 }
+                TotalWire -= Math.sqrt(Math.pow(InputPort.centerX - OutputPort.centerX, 2) + Math.pow(InputPort.centerY - OutputPort.centerY, 2));
+                SystemController.IndicatorStatusCheck();
                 InputPort.usage = Usage.Used;
                 OutputPort.usage = Usage.Used;
                 BothSelected.set(false);
@@ -61,25 +64,21 @@ public class WireController {
 
         InputSelected.addListener((observable, oldValue, newValue) -> {
             Wire wire = new Wire();
-            if (newValue & (!OutputSelect)){
+            if (newValue & (!OutputSelect)) {
                 wire.InputPort = InputPort;
-                wire.wire = new Line(InputPort.centerX, InputPort.centerY, InputPort.centerX , InputPort.centerY);
+                wire.wire = new Line(InputPort.centerX, InputPort.centerY, InputPort.centerX, InputPort.centerY);
                 pane.getChildren().add(wire.wire);
                 pane.setOnMouseMoved(event -> {
-                    if(InputSelect) {
+                    if (InputSelect) {
                         double x = event.getSceneX();
                         double y = event.getSceneY();
-                        if (x > InputPort.centerX)
-                            x--;
+                        if (x > InputPort.centerX) x--;
                         else x++;
-                        if (y > InputPort.centerY)
-                            y--;
+                        if (y > InputPort.centerY) y--;
                         else y++;
                         wire.wire.setEndX(x);
                         wire.wire.setEndY(y);
-                    }
-                    else
-                        pane.getChildren().remove(wire.wire);
+                    } else pane.getChildren().remove(wire.wire);
                 });
             }
         });
@@ -87,32 +86,28 @@ public class WireController {
 
         OutputSelected.addListener((observable, oldValue, newValue) -> {
             Wire wire = new Wire();
-            if (newValue & (!InputSelect)){
+            if (newValue & (!InputSelect)) {
                 wire.OutputPort = OutputPort;
-                wire.wire = new Line(OutputPort.centerX, OutputPort.centerY, OutputPort.centerX , OutputPort.centerY);
+                wire.wire = new Line(OutputPort.centerX, OutputPort.centerY, OutputPort.centerX, OutputPort.centerY);
                 pane.getChildren().add(wire.wire);
                 pane.setOnMouseMoved(event -> {
-                    if(OutputSelect) {
+                    if (OutputSelect) {
                         double x = event.getSceneX();
                         double y = event.getSceneY();
-                        if (x > OutputPort.centerX)
-                            x--;
+                        if (x > OutputPort.centerX) x--;
                         else x++;
-                        if (y > OutputPort.centerY)
-                            y--;
+                        if (y > OutputPort.centerY) y--;
                         else y++;
                         wire.wire.setEndX(x);
                         wire.wire.setEndY(y);
-                    }
-                    else
-                        pane.getChildren().remove(wire.wire);
+                    } else pane.getChildren().remove(wire.wire);
                 });
             }
         });
 
 
         WireDelete.addListener((observable, oldValue, newValue) -> {
-            if (newValue){
+            if (newValue) {
                 wires.remove(WireDeletePort.wire);
                 WireDeletePort.wire.InputPort.system.inWires.remove(WireDeletePort.wire);
                 WireDeletePort.wire.OutputPort.system.outWires.remove(WireDeletePort.wire);
@@ -124,6 +119,7 @@ public class WireController {
                 WireDeletePort.wire.InputPort.wire = null; //InPort.wire is link to OutputPort.wire so it is enough to make one of them null.
                 WireDeletePort = null;
                 WireDelete.set(false);
+                SystemController.IndicatorStatusCheck();
             }
         });
 
@@ -132,16 +128,15 @@ public class WireController {
     public static void UpdateSelection(Port port) {
         if (port.usage.equals(Usage.NotUsed)) {
             if (port.portStatus == PortStatus.Input & InputPort == null) {
-                if (OutputPort == null || (OutputPort.portShape == port.portShape & OutputPort.system != port.system)) {
+                if (OutputPort == null || (OutputPort.portShape == port.portShape & OutputPort.system != port.system & Math.sqrt(Math.pow(port.centerX - OutputPort.centerX, 2) + Math.pow(port.centerY - OutputPort.centerY, 2)) <= TotalWire)) {
                     InputSelect = !InputSelect;
                     InputPort = (InputSelect) ? port : null;
                     port.shape.setFill(Color.SIENNA);
                 }
-                if (InputSelect & OutputPort == null)
-                    InputSelected.set(true);
+                if (InputSelect & OutputPort == null) InputSelected.set(true);
             }
             if (port.portStatus == PortStatus.Output & OutputPort == null) {
-                if (InputPort == null || (InputPort.portShape == port.portShape & port.system != InputPort.system)) {
+                if (InputPort == null || (InputPort.portShape == port.portShape & port.system != InputPort.system & Math.sqrt(Math.pow(InputPort.centerX - port.centerX, 2) + Math.pow(InputPort.centerY - port.centerY, 2)) <= TotalWire)) {
                     OutputSelect = !OutputSelect;
                     OutputPort = (OutputSelect) ? port : null;
                     port.shape.setFill(Color.SIENNA);
@@ -150,12 +145,10 @@ public class WireController {
                     OutputSelected.set(true);
                 }
             }
-            //if(OutputPort != null & InputPort != null & Math.sqrt(Math.pow(InputPort.centerX - OutputPort.centerX, 2) + Math.pow(InputPort.centerY - OutputPort.centerY, 2)) < TotalWire)
             BothSelected.set(InputSelect && OutputSelect);
-        }
-        else if ((port.portStatus == PortStatus.Input & OutputPort == null) || (port.portStatus == PortStatus.Output & InputPort == null) ){
-                WireDeletePort = port;
-                WireDelete.set(true);
+        } else if ((port.portStatus == PortStatus.Input & OutputPort == null) || (port.portStatus == PortStatus.Output & InputPort == null)) {
+            WireDeletePort = port;
+            WireDelete.set(true);
         }
     }
 }
